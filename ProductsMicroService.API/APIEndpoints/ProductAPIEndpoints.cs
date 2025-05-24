@@ -19,7 +19,14 @@ namespace eCommerce.ProductsMicroService.API.APIEndpoints
             //GET /api/products/search/product-id/00000000-0000-0000-0000-000000000000
             app.MapGet("/api/products/search/product-id/{ProductID:guid}", async (IProductsService productService, Guid ProductID) =>
             {
+                //await Task.Delay(200);
+                //throw new NotImplementedException();
+
                 ProductResponse? products = await productService.GetProductByCondition(temp => temp.ProductID == ProductID);
+                
+                if (products == null)
+                    return Results.NotFound();
+
                 return Results.Ok(products);
             });
 
@@ -39,7 +46,7 @@ namespace eCommerce.ProductsMicroService.API.APIEndpoints
 
 
             //POST /api/products
-            app.MapPost("/api/products/", async (IProductsService productService, ProductAddRequest productAddRequest, IValidator<ProductAddRequest> productAddRequestValidator) =>
+            app.MapPost("/api/products", async (IProductsService productService, ProductAddRequest productAddRequest, IValidator<ProductAddRequest> productAddRequestValidator) =>
             {
                 //Validate the ProductAddRequest object using Fluent Validation
                 ValidationResult validationResult = await productAddRequestValidator.ValidateAsync(productAddRequest);
@@ -62,7 +69,7 @@ namespace eCommerce.ProductsMicroService.API.APIEndpoints
 
 
             //PUT /api/products
-            app.MapPut("/api/products/{ProductID:guid}", async (IProductsService productService, ProductUpdateRequest productUpdateRequest, IValidator<ProductUpdateRequest> productUpdateRequestValidator) =>
+            app.MapPut("/api/products", async (IProductsService productService, ProductUpdateRequest productUpdateRequest, IValidator<ProductUpdateRequest> productUpdateRequestValidator) =>
             {
                 //Validate the ProductAddRequest object using Fluent Validation
                 ValidationResult validationResult = await productUpdateRequestValidator.ValidateAsync(productUpdateRequest);
